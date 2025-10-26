@@ -1,21 +1,37 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-urdu: var(--font-jameel-noori-nastaleeq);
+/*
+ * Custom color palette for Palestinian flag theme
+ */
+@theme {
   --color-palestine-red: #CE1126;
   --color-palestine-green: #007A3D;
   --color-palestine-black: #000000;
   --color-palestine-white: #FFFFFF;
   --color-palestine-gold: #FFD600;
+  
+  /* Dark mode colors */
+  --color-dark-50: #f9fafb;
+  --color-dark-100: #f3f4f6;
+  --color-dark-200: #e5e7eb;
+  --color-dark-300: #d1d5db;
+  --color-dark-400: #9ca3af;
+  --color-dark-500: #6b7280;
+  --color-dark-600: #4b5563;
+  --color-dark-700: #374151;
+  --color-dark-800: #1f2937;
+  --color-dark-900: #111827;
+  
+  /* Font families */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-urdu: var(--font-jameel-noori-nastaleeq);
+}
+
+/* Base styles */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -42,4 +58,84 @@ html[dir="rtl"] {
   font-family: var(--font-jameel-noori-nastaleeq), "Jameel Noori Nastaleeq", serif;
   direction: rtl;
   text-align: right;
+}
+
+/* Dark mode utility classes */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+/* Ensure proper contrast in dark mode */
+.dark .text-palestine-green {
+  color: #007A3D;
+}
+
+.dark .text-palestine-gold {
+  color: #FFD600;
+}
+
+.dark .text-palestine-red {
+  color: #CE1126;
+}
+
+.dark .text-palestine-white {
+  color: #FFFFFF;
+}
+
+.dark .text-palestine-black {
+  color: #000000;
+}
+
+/* Dark mode form elements */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #1f2937; /* dark-800 */
+  border-color: #374151; /* dark-700 */
+  color: #f9fafb; /* dark-50 */
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #9ca3af; /* dark-400 */
+}
+
+/* Dark mode table elements */
+.dark .bg-white {
+  background-color: #1f2937; /* dark-800 */
+}
+
+.dark .divide-y > :not([hidden]) ~ :not([hidden]) {
+  border-color: #374151; /* dark-700 */
+}
+
+.dark .border-gray-200 {
+  border-color: #374151; /* dark-700 */
+}
+
+.dark .text-gray-500 {
+  color: #9ca3af; /* dark-400 */
+}
+
+.dark .text-gray-700 {
+  color: #d1d5db; /* dark-300 */
+}
+
+.dark .text-gray-900 {
+  color: #f9fafb; /* dark-50 */
+}
+
+/* Dark mode button elements */
+.dark .bg-palestine-green {
+  background-color: #007A3D;
+}
+
+.dark .bg-palestine-gold {
+  background-color: #FFD600;
+  color: #007A3D;
+}
+
+.dark .text-palestine-green {
+  color: #007A3D;
 }
