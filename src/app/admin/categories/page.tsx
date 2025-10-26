@@ -1,28 +1,28 @@
 "use client";
 
 import { useState } from 'react';
-import { BlogCategoryType } from '@/src/types/blog';
+import { BlogCategory, BlogCategoryType } from '@/src/types/blog';
 import { Pencil, Trash2, Plus, Save, X } from 'lucide-react';
 
 // Mock data for categories
 const initialCategories: BlogCategoryType[] = [
   {
     id: "1",
-    name: "کہانیاں",
+    name: BlogCategory.STORIES,
     description: "فلسطینیوں کی کہانیاں اور ذاتی تجربات",
     slug: "stories",
     icon: "user"
   },
   {
     id: "2",
-    name: "تاریخ",
+    name: BlogCategory.HISTORY,
     description: "فلسطین کی تاریخ اور اہم واقعات",
     slug: "history",
     icon: "book"
   },
   {
     id: "3",
-    name: "اپ ڈیٹس",
+    name: BlogCategory.UPDATES,
     description: "مشرق وسطی میں حالیہ تبدیلیاں اور اپ ڈیٹس",
     slug: "updates",
     icon: "newspaper"
@@ -30,6 +30,40 @@ const initialCategories: BlogCategoryType[] = [
 ];
 
 export default function AdminCategories() {
+
+  // Helper function to convert BlogCategory enum to string
+  const getStringFromBlogCategory = (category: BlogCategory): string => {
+    return category as string;
+  };
+
+  // Helper function to convert string to BlogCategory enum
+  const getBlogCategoryFromString = (categoryString: string): BlogCategory => {
+    switch(categoryString) {
+      case "کہانیاں":
+        return BlogCategory.STORIES;
+      case "تاریخ":
+        return BlogCategory.HISTORY;
+      case "اپ ڈیٹس":
+        return BlogCategory.UPDATES;
+      default:
+        return BlogCategory.STORIES;
+    }
+  };
+
+  // Helper function to get icon from category string
+  const getIconFromCategory = (categoryString: string): string => {
+    switch(categoryString) {
+      case "کہانیاں":
+        return "user";
+      case "تاریخ":
+        return "book";
+      case "اپ ڈیٹس":
+        return "newspaper";
+      default:
+        return "user";
+    }
+  };
+
   const [categories, setCategories] = useState<BlogCategoryType[]>(initialCategories);
   const [newCategory, setNewCategory] = useState({
     name: '',
@@ -45,11 +79,14 @@ export default function AdminCategories() {
       return;
     }
 
+    const categoryName: BlogCategory = getBlogCategoryFromString(newCategory.name);
+
     const newCat: BlogCategoryType = {
       id: `cat_${Date.now()}`,
-      name: newCategory.name,
+      name: categoryName,
       description: newCategory.description,
-      slug: newCategory.slug
+      slug: newCategory.slug,
+      icon: getIconFromCategory(newCategory.name) // Use the helper function
     };
 
     setCategories([...categories, newCat]);
@@ -58,15 +95,27 @@ export default function AdminCategories() {
 
   const startEditing = (category: BlogCategoryType) => {
     setEditingId(category.id);
-    setEditingCategory({ ...category });
+    // Create a temporary structure for editing with string values
+    setEditingCategory({ 
+      ...category,
+      name: getStringFromBlogCategory(category.name) as any
+    } as any);
   };
 
   const saveEditing = () => {
     if (!editingCategory) return;
 
+    // Convert string back to BlogCategory enum for saving
+    const categoryName: BlogCategory = getBlogCategoryFromString(editingCategory.name as string);
+    const icon: string = getIconFromCategory(editingCategory.name as string);
+
     setCategories(categories.map(cat => 
-      cat.id === editingId ? editingCategory : cat
-    ));
+      cat.id === editingId ? {
+        ...editingCategory, 
+        name: categoryName,
+        icon: icon
+      } : cat
+    ) as BlogCategoryType[]);
     setEditingId(null);
     setEditingCategory(null);
   };
@@ -99,14 +148,17 @@ export default function AdminCategories() {
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
               نام
             </label>
-            <input
-              type="text"
+            <select
               id="name"
               value={newCategory.name}
               onChange={(e) => setNewCategory({...newCategory, name: e.target.value})}
-              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-palestine-green focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
-              placeholder="زمرے کا نام"
-            />
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-palestine-green focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            >
+              <option value="">زمرہ منتخب کریں</option>
+              <option value="کہانیاں">کہانیاں</option>
+              <option value="تاریخ">تاریخ</option>
+              <option value="اپ ڈیٹس">اپ ڈیٹس</option>
+            </select>
           </div>
           <div>
             <label htmlFor="slug" className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
@@ -168,12 +220,21 @@ export default function AdminCategories() {
                   {editingId === category.id && editingCategory ? (
                     <>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <input
-                          type="text"
+                        <select
                           value={editingCategory.name}
-                          onChange={(e) => setEditingCategory({...editingCategory, name: e.target.value})}
+                          onChange={(e) => setEditingCategory(prev => {
+                            if (!prev) return null;
+                            return {
+                              ...prev,
+                              name: e.target.value
+                            } as any;
+                          })}
                           className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-palestine-green focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                        />
+                        >
+                          <option value="کہانیاں">کہانیاں</option>
+                          <option value="تاریخ">تاریخ</option>
+                          <option value="اپ ڈیٹس">اپ ڈیٹس</option>
+                        </select>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
                         <textarea

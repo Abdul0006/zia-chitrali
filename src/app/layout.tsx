@@ -16,16 +16,6 @@ const jameelNooriNastaleeq = localFont({
   variable: "--font-jameel-noori-nastaleeq",
 });
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
   title: {
     default: "ضیاء چترالی - فلسطین کی آواز",
@@ -88,7 +78,7 @@ export default function RootLayout({
   return (
     <html lang="ur" dir="rtl">
       <body
-        className={`${jameelNooriNastaleeq.variable} ${geistSans.variable} ${geistMono.variable} antialiased bg-white dark:bg-gray-900 dark:text-white`}
+        className={`${jameelNooriNastaleeq.variable} antialiased bg-white dark:bg-gray-900 dark:text-white`}
       >
         <ThemeProvider>
           {children}
